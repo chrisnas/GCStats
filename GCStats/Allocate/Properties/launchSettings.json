@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Allocate": {
+      "commandName": "Project",
+      "commandLineArgs": "12",
+      "environmentVariables": {
+        "DOTNET_gcServer": "0",
+        "DOTNET_GCLatencyLevel": "1",
+        "DOTNET_gcConcurrent": "0"
+      }
+    }
+  }
+}

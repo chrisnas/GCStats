@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>GCStats</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>dotnet-gcstats</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>dotnet-gcstats</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>dotnet-gcstats</Title>
+    <Authors>christophe Nasarre</Authors>
+    <Owners>chrisnas</Owners>
+    <RepositoryUrl>https://github.com/chrisnas</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/chrisnas/GCStats</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>Global CLI tool to display live statistics during .NET garbage collections</Description>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <Copyright>Copyright Christophe Nasarre 2024-$([System.DateTime]::UtcNow.ToString(yyyy))</Copyright>
+    <PackageTags>.NET TraceEvent CLR GC</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE"  Pack="true" PackagePath="" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Diagnostics.NETCore.Client" Version="0.2.510501" />
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="3.1.8" />
+  </ItemGroup>
+
+</Project>
