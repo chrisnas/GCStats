@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-gcstats", "dotnet-gcstats\dotnet-gcstats.csproj", "{F347A65E-5EDC-4DFD-975F-53F6524BD028}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-gcstats", "dotnet-gcstats\dotnet-gcstats.csproj", "{F347A65E-5EDC-4DFD-975F-53F6524BD028}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Allocate", "Allocate\Allocate.csproj", "{4CA8125F-92E9-4EA5-A7D1-A9972B813FD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Allocate", "Allocate\Allocate.csproj", "{4CA8125F-92E9-4EA5-A7D1-A9972B813FD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotnet-fullgc", "dotnet-fullgc\dotnet-fullgc.csproj", "{61F728DA-AE62-4E49-9ED6-18DF34E7AF24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4CA8125F-92E9-4EA5-A7D1-A9972B813FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4CA8125F-92E9-4EA5-A7D1-A9972B813FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4CA8125F-92E9-4EA5-A7D1-A9972B813FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F728DA-AE62-4E49-9ED6-18DF34E7AF24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F728DA-AE62-4E49-9ED6-18DF34E7AF24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F728DA-AE62-4E49-9ED6-18DF34E7AF24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F728DA-AE62-4E49-9ED6-18DF34E7AF24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

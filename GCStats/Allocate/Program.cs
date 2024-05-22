@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime;
+using System.Threading;
 
 namespace Allocate
 {
@@ -35,6 +36,7 @@ namespace Allocate
                 if (i % 100 == 0)
                 {
                     Console.WriteLine("Allocated 100 arrays");
+                    Thread.Sleep(500);
                     if (GC.CollectionCount(0) >= maxGarbageCollectionsCount)
                     {
                         Console.WriteLine($"Leaving at i = {i}");
@@ -46,8 +48,8 @@ namespace Allocate
                 }
             }
 
-            Console.WriteLine("Press ENTER to exit...");
-            Console.ReadLine();
+            Console.WriteLine("Press any key to exit...");
+            Console.Read();
         }
     }
 }

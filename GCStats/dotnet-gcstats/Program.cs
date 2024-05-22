@@ -119,75 +119,36 @@ namespace GCStats
             Console.WriteLine($"{eventData.ID,4} - {eventData.OpcodeName} | {eventData.EventName}");
         }
 
-        private static ConsoleColor GetGenColor(int gen)
-        {
-            switch (gen)
-            {
-                case 2: return ConsoleColor.Blue;
-                case 1: return ConsoleColor.DarkCyan;
-                case 0: return ConsoleColor.Cyan;
-                default:
-                    return ConsoleColor.White;
-            }
-        }
-
         private static void OnGCStart(GCStartTraceData payload)
         {
             Console.WriteLine();
             Console.Write($"_______#{payload.Count}");
-            WriteWithColor($" gen{payload.Depth}", GetGenColor(payload.Depth));
+            Shared.WriteWithColor($" gen{payload.Depth}", Shared.GetGenColor(payload.Depth));
 
-            GCReasonNet8 reason = (GCReasonNet8)payload.Reason;
+            Shared.GCReasonNet8 reason = (Shared.GCReasonNet8)payload.Reason;
             if (
-                (reason == GCReasonNet8.Induced) ||
-                (reason == GCReasonNet8.InducedNotForced) ||
-                (reason == GCReasonNet8.InducedCompacting) ||
-                (reason == GCReasonNet8.InducedAggressive)
+                (reason == Shared.GCReasonNet8.Induced) ||
+                (reason == Shared.GCReasonNet8.InducedNotForced) ||
+                (reason == Shared.GCReasonNet8.InducedCompacting) ||
+                (reason == Shared.GCReasonNet8.InducedAggressive)
                 )
             {
                 Console.Write(" = ");
-                WriteWithColor($"{(GCReasonNet8)payload.Reason}", ConsoleColor.Red);
+                Shared.WriteWithColor($"{(Shared.GCReasonNet8)payload.Reason}", ConsoleColor.Red);
                 Console.WriteLine();
             }
             else
             {
-                Console.WriteLine($" = {(GCReasonNet8)payload.Reason}");
-            }
-        }
-
-        private static void DumpGlobalMechanisms(GCGlobalMechanisms gm)
-        {
-            string[] mechanisms = $"{gm}".Split(", ");
-            int count = mechanisms.Length;
-            for ( int i = 0; i < count; i++ )
-            {
-                if (mechanisms[i] == "Compaction")
-                {
-                    WriteWithColor(mechanisms[i], ConsoleColor.DarkYellow);
-                }
-                else
-                if (mechanisms[i] == "Concurrent")
-                {
-                    WriteWithColor(mechanisms[i], ConsoleColor.DarkGreen);
-                }
-                else
-                {
-                    Console.Write(mechanisms[i]);
-                }
-
-                if (i < count - 1)
-                {
-                    Console.Write(", ");
-                }
+                Console.WriteLine($" = {(Shared.GCReasonNet8)payload.Reason}");
             }
         }
 
         private static void OnGCGlobalHeapHistory(GCGlobalHeapHistoryTraceData payload)
         {
             Console.Write($".......<  ");
-            WriteWithColor($"gen{payload.CondemnedGeneration}", GetGenColor(payload.CondemnedGeneration));
+            Shared.WriteWithColor($"gen{payload.CondemnedGeneration}", Shared.GetGenColor(payload.CondemnedGeneration));
             Console.Write($" {payload.PauseMode} [");
-            DumpGlobalMechanisms(payload.GlobalMechanisms);
+            Shared.DumpGlobalMechanisms(payload.GlobalMechanisms);
             Console.WriteLine($"] mem pressure = {payload.MemoryPressure}");
         }
 
@@ -195,16 +156,16 @@ namespace GCStats
         {
             if (payload.HeapIndex == 0)
             {
-                var condemnReasonCondition = (payload.CondemnReasons1 == 0) ? "" : $"{(CondemnReasonCondition)payload.CondemnReasons1}";
-                int startGen = GetGen(payload.CondemnReasons0, gen_initial);
-                int finalGen = GetGen(payload.CondemnReasons0, gen_final_per_heap);
-                var startGenColor = GetGenColor(startGen);
-                var finalGenColor = GetGenColor(finalGen);
+                var condemnReasonCondition = (payload.CondemnReasons1 == 0) ? "" : $"{(Shared.CondemnReasonCondition)payload.CondemnReasons1}";
+                int startGen = Shared.GetGen(payload.CondemnReasons0, Shared.gen_initial);
+                int finalGen = Shared.GetGen(payload.CondemnReasons0, Shared.gen_final_per_heap);
+                var startGenColor = Shared.GetGenColor(startGen);
+                var finalGenColor = Shared.GetGenColor(finalGen);
                 Console.Write($"  condemn ");
-                WriteWithColor($"gen{startGen}", startGenColor);
+                Shared.WriteWithColor($"gen{startGen}", startGenColor);
                 Console.Write($" -> ");
-                WriteWithColor($"gen{finalGen}", finalGenColor);
-                Console.WriteLine($" [budget gen{GetGen(payload.CondemnReasons0, gen_alloc_budget)}] {condemnReasonCondition}");
+                Shared.WriteWithColor($"gen{finalGen}", finalGenColor);
+                Console.WriteLine($" [budget gen{Shared.GetGen(payload.CondemnReasons0, Shared.gen_alloc_budget)}] {condemnReasonCondition}");
 
                 if (_isVerbose)
                 {
@@ -235,89 +196,6 @@ namespace GCStats
             Console.WriteLine();
         }
 
-        private static void WriteWithColor(string text, ConsoleColor color)
-        {
-            var current = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(text);
-            Console.ForegroundColor = current;
-        }
-
-
-
-        private const int gen_initial = 0;          // indicates the initial gen to condemn.
-        private const int gen_final_per_heap = 1;   // indicates the final gen to condemn per heap.
-        private const int gen_alloc_budget = 2;     // indicates which gen's budget is exceeded.
-
-        private const int InitialGenMask = 0x0 + 0x1 + 0x2;
-
-        static int GetGen(int val, int reason)
-        {
-            int gen = (val >> 2 * reason) & InitialGenMask;
-            return gen;
-        }
-
-
-        public enum GCReasonNet8
-        {
-            AllocSmall,
-            Induced,
-            LowMemory,
-            Empty,
-            AllocLarge,
-            OutOfSpaceSOH,
-            OutOfSpaceLOH,
-            InducedNotForced,
-            Internal,
-            InducedLowMemory,
-            InducedCompacting,
-            LowMemoryHost,
-            PMFullGC,
-            LowMemoryHostBlocking,
-            //
-            // new ones
-            BgcTuningSOH,
-            BgcTuningLOH,
-            BgcStepping,
-            InducedAggressive,
-        }
-
-        [Flags]
-        enum CondemnReasonCondition
-        {
-            no_condemn_reason_condition = 0,
-            induced_fullgc              = 0x1,
-            expand_fullgc               = 0x2,
-            high_mem                    = 0x4,
-            very_high_mem               = 0x8,
-            low_ephemeral               = 0x10,
-            low_card                    = 0x20,
-            eph_high_frag               = 0x40,
-            max_high_frag               = 0x80,
-            max_high_frag_e             = 0x100,
-            max_high_frag_m             = 0x200,
-            max_high_frag_vm            = 0x400,
-            max_gen1                    = 0x800,
-            before_oom                  = 0x1000,
-            gen2_too_small              = 0x2000,
-            induced_noforce             = 0x4000,
-            before_bgc                  = 0x8000,
-            almost_max_alloc            = 0x10000,
-            joined_avoid_unproductive   = 0x20000,
-            joined_pm_induced_fullgc    = 0x40000,
-            joined_pm_alloc_loh         = 0x80000,
-            joined_gen1_in_pm           = 0x100000,
-            joined_limit_before_oom     = 0x200000,
-            joined_limit_loh_frag       = 0x400000,
-            joined_limit_loh_reclaim    = 0x800000,
-            joined_servo_initial        = 0x1000000,
-            joined_servo_ngc            = 0x2000000,
-            joined_servo_bgc            = 0x4000000,
-            joined_servo_postpone       = 0x8000000,
-            joined_stress_mix           = 0x10000000,
-            joined_stress               = 0x20000000,
-            gcrc_max                    = 0x40000000
-        }
 
         static void ShowHelp(string name, string version, string message)
         {
