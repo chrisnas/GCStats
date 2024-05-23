@@ -12,7 +12,7 @@
 
   <PropertyGroup>
     <PackageId>dotnet-fullgc</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <Title>dotnet-fullgc</Title>
     <Authors>christophe Nasarre</Authors>
     <Owners>chrisnas</Owners>

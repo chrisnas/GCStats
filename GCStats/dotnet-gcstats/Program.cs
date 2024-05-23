@@ -135,6 +135,10 @@ namespace GCStats
             {
                 Console.Write(" = ");
                 Shared.WriteWithColor($"{(Shared.GCReasonNet8)payload.Reason}", ConsoleColor.Red);
+                if (payload.ClientSequenceNumber != 0)
+                {
+                    Shared.WriteWithColor($"  ##{payload.ClientSequenceNumber}", ConsoleColor.Magenta);
+                }
                 Console.WriteLine();
             }
             else

@@ -31,10 +31,28 @@ namespace dotnet_fullgc
                 return;
             }
 
+            Int64 clientSequenceNumber = 0;
+            if (args.Length > 2)
+            {
+                if (args[1] == "-csn")
+                {
+                    if (!Int64.TryParse(args[2], out clientSequenceNumber))
+                    {
+                        ShowHelp(name, version.ToString(), $"Invalid client sequence number '{args[2]}'");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                ShowHelp(name, version.ToString(), $"Invalid option '{args[1]}'");
+                return;
+            }
+
             ShowHeader(name, version.ToString());
             try
             {
-                TriggerGC(pid);
+                TriggerGC(pid, clientSequenceNumber);
             }
             catch (Exception x)
             {
@@ -42,11 +60,11 @@ namespace dotnet_fullgc
             }
         }
 
-        private static void TriggerGC(int processId)
+        private static void TriggerGC(int processId, Int64 clientSequenceNumber)
         {
-            // TODO: check how to provide the id of the gc to trigger
+            // Note: this client sequence number is not processed before .NET 9
             Dictionary<string, string> arguments = new Dictionary<string, string>();
-            arguments.Add("Id", "42");
+            arguments.Add("Id", clientSequenceNumber.ToString());
             var providers = new List<EventPipeProvider>()
             {
                 new EventPipeProvider(
@@ -128,7 +146,7 @@ namespace dotnet_fullgc
             "by Christophe Nasarre" + Environment.NewLine +
             "Trigger a full garbage collections in a .NET application";
         private static string Help =
-            "Usage:  {0} <process ID>" + Environment.NewLine +
+            "Usage:  {0} <process ID> [-csn <client sequence number>]" + Environment.NewLine +
             "";
 
     }
